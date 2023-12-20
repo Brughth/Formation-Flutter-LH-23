@@ -54,6 +54,8 @@ class CounterCubicScreen extends StatelessWidget {
             heroTag: "Increment",
             onPressed: () {
               context.read<CounterCubit>().increment();
+              // context.read<CounterBloc>().add(IncrementCounterEvent());
+              // getIt.get<CounterBloc>().add(IncrementCounterEvent());
             },
             tooltip: 'Increment',
             child: const Icon(Icons.add),
