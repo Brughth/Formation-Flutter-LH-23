@@ -1,15 +1,18 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formation_lh_23/galery/logic/cubit/galery_cubit.dart';
+import 'package:formation_lh_23/galery/presentation/image_screen.dart';
 import 'package:formation_lh_23/services_locator.dart';
 
+@RoutePage()
 class GalleryScreen extends StatelessWidget {
   const GalleryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    var screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Gallery App"),
@@ -38,13 +41,21 @@ class GalleryScreen extends StatelessWidget {
             );
           }
 
+          // var images = state.images;
+
+          // images[1] = state.images.first;
+
           return RefreshIndicator(
             onRefresh: () async {
               getIt.get<GalleryCubit>().getImages();
             },
             child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: screenWidth < 800
+                    ? 2
+                    : (screenWidth <= 1200 && screenWidth >= 800)
+                        ? 3
+                        : 4,
                 mainAxisSpacing: 10,
                 crossAxisSpacing: 10,
               ),
@@ -52,9 +63,28 @@ class GalleryScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 print("object");
                 var image = state.images[index];
-                return Image.network(
-                  image,
-                  fit: BoxFit.cover,
+
+                return InkWell(
+                  onTap: () async {
+                    var result = await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return ImageScreen(
+                            image: image,
+                          );
+                        },
+                      ),
+                    );
+
+                    print("Return Value: $result");
+                  },
+                  child: Hero(
+                    tag: image,
+                    child: Image.network(
+                      image,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 );
                 // return CachedNetworkImage(
                 //   imageUrl: image,
