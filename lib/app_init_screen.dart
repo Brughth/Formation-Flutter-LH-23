@@ -1,8 +1,6 @@
 import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:formation_lh_23/application_screen.dart';
-import 'package:formation_lh_23/onboarding/onboarding_screen.dart';
 import 'package:formation_lh_23/routers/app_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

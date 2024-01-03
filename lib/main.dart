@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -8,7 +9,13 @@ import 'package:formation_lh_23/posts_app_wiht_bloc/logic/bloc/post_bloc.dart';
 import 'package:formation_lh_23/routers/app_router.dart';
 import 'package:formation_lh_23/services_locator.dart';
 
-void main() {
+import 'firebase_options.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   setupLocator();
   runApp(MyApp());
 }

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "317147165424",
+    "project_id": "formation-lh-23",
+    "storage_bucket": "formation-lh-23.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:317147165424:android:3a96ecc366e6eb419bc835",
+        "android_client_info": {
+          "package_name": "com.example.formation_lh_23"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNDnQsTOUz5Nd-RxpcRSdvSvh4OE8A2sc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

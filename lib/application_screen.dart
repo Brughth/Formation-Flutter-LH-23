@@ -5,7 +5,6 @@ import 'package:flutter/widgets.dart';
 import 'package:formation_lh_23/counter_whitout_bloc/counter_screen.dart';
 import 'package:formation_lh_23/counter_with_bloc/presentation/counter_bloc_screen.dart';
 import 'package:formation_lh_23/counter_with_cubit/presentation/counter_cubic_screen.dart';
-import 'package:formation_lh_23/galery/presentation/gallery_screen.dart';
 import 'package:formation_lh_23/posts_app_wiht_bloc/presentation/post_screen.dart';
 import 'package:formation_lh_23/routers/app_router.dart';
 
@@ -90,6 +89,13 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
             title: const Text("Gallery App"),
             onTap: () {
               context.router.navigate(const GalleryRoute());
+            },
+          ),
+          const Divider(),
+          ListTile(
+            title: const Text("User App"),
+            onTap: () {
+              context.router.navigate(const UserRoute());
             },
           ),
         ],
