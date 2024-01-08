@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class UserServices {
   CollectionReference<Map<String, dynamic>> users =
-      FirebaseFirestore.instance.collection("users");
+      FirebaseFirestore.instance.collection("personnes");
 
   Future<DocumentReference<Map<String, dynamic>>> addUser(
       {required Map<String, dynamic> data}) async {
@@ -11,7 +14,7 @@ class UserServices {
     return userRef;
   }
 
-  void updateUser({
+  updateUser({
     required String id,
     required Map<String, dynamic> data,
   }) async {
@@ -19,7 +22,17 @@ class UserServices {
     await users.doc(id).set(data, SetOptions(merge: true));
   }
 
-  void deleteUser({required String id}) async {
+  deleteUser({required String id}) async {
     await users.doc(id).delete();
+  }
+
+  Future<String> uploadFileToFirebaseAndGetDownloadURL(
+      {required File image}) async {
+    Reference ref = FirebaseStorage.instance.ref();
+
+    TaskSnapshot upload =
+        await ref.child("images/${image.hashCode}.jpg").putFile(image);
+
+    return await upload.ref.getDownloadURL();
   }
 }

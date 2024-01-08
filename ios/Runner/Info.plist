@@ -45,5 +45,9 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Cette app utilise votre photothèque pour télécharger votre photos de profil</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Cette app utilise votre camera pour télécharger votre photos de profil</string>
 </dict>
 </plist>

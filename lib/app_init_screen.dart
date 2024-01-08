@@ -19,7 +19,7 @@ class _AppInitScreenState extends State<AppInitScreen> {
 
     if (result == false) {
       context.router.pushAndPopUntil(
-        const ApplicationRoute(),
+        const LoginRoute(),
         predicate: (route) => false,
       );
     } else {

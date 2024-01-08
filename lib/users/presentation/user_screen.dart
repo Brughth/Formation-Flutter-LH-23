@@ -2,14 +2,11 @@ import 'package:auto_route/auto_route.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:formation_lh_23/shared/theming/app_colors.dart';
-import 'package:formation_lh_23/shared/widgets/app_input.dart';
+import 'package:formation_lh_23/galery/presentation/image_screen.dart';
 import 'package:formation_lh_23/users/data/user_model.dart';
+import 'package:formation_lh_23/users/presentation/add_or_update_user_widget.dart';
+import 'package:formation_lh_23/users/presentation/confirm_widget.dart';
 import 'package:formation_lh_23/users/services/user_services.dart';
-
-import '../../shared/widgets/app_button.dart';
 
 @RoutePage()
 class UserScreen extends StatefulWidget {
@@ -20,30 +17,15 @@ class UserScreen extends StatefulWidget {
 }
 
 class _UserScreenState extends State<UserScreen> {
-  late TextEditingController _nameController;
-  late TextEditingController _emailController;
-  late TextEditingController _telController;
-
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
   late UserServices _userServices;
-  bool isLoading = false;
+  late Stream<QuerySnapshot<Map<String, dynamic>>> userStream;
 
   @override
   void initState() {
     _userServices = UserServices();
-    _nameController = TextEditingController();
-    _emailController = TextEditingController();
-    _telController = TextEditingController();
+    userStream =
+        _userServices.users.orderBy("createAt", descending: true).snapshots();
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _nameController.dispose();
-    _telController.dispose();
-    super.dispose();
   }
 
   @override
@@ -54,7 +36,7 @@ class _UserScreenState extends State<UserScreen> {
         centerTitle: true,
       ),
       body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: _userServices.users.snapshots(),
+        stream: userStream,
         builder: (BuildContext context,
             AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
           if (!snapshot.hasData) {
@@ -88,10 +70,102 @@ class _UserScreenState extends State<UserScreen> {
               itemBuilder: (context, index) {
                 var result = data[index].data();
                 result['id'] = data[index].id;
-                var user = UserModel.fromJson(result);
+                var user = PersonModel.fromJson(result);
 
                 return ListTile(
+                  onTap: () {
+                    if (user.image != null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return ImageScreen(image: user.image!);
+                          },
+                        ),
+                      );
+                    }
+                  },
+                  leading: Hero(
+                    tag: user.image ?? "",
+                    child: Container(
+                      height: 80,
+                      width: 80,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: user.image != null
+                            ? DecorationImage(
+                                image: NetworkImage(user.image!),
+                                fit: BoxFit.cover,
+                              )
+                            : null,
+                      ),
+                    ),
+                  ),
                   title: Text(user.name),
+                  subtitle: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(user.email),
+                      Text(user.tel),
+                    ],
+                  ),
+                  trailing: PopupMenuButton<int>(
+                    onSelected: (value) {
+                      if (value == 0) {
+                        showCustomDialgue(
+                          context: context,
+                          title: "Add user",
+                          child: AddOrUpdateUserWidget(
+                            user: user,
+                            readOnly: true,
+                          ),
+                        );
+                      }
+
+                      if (value == 1) {
+                        showCustomDialgue(
+                          context: context,
+                          title: "Add user",
+                          child: AddOrUpdateUserWidget(
+                            user: user,
+                            readOnly: false,
+                          ),
+                        );
+                      }
+
+                      if (value == 2) {
+                        showCustomDialgue(
+                          context: context,
+                          title: "Add user",
+                          child: ConformWidget(
+                            onConfirm: () async {
+                              await _userServices.deleteUser(id: user.id);
+                              if (mounted) {
+                                context.router.pop();
+                              }
+                            },
+                          ),
+                        );
+                      }
+                    },
+                    itemBuilder: (context) {
+                      return [
+                        const PopupMenuItem(
+                          value: 0,
+                          child: Text("View"),
+                        ),
+                        const PopupMenuItem(
+                          value: 1,
+                          child: Text("Edit"),
+                        ),
+                        const PopupMenuItem(
+                          value: 2,
+                          child: Text("Delete"),
+                        ),
+                      ];
+                    },
+                  ),
                 );
               },
               separatorBuilder: (context, index) {
@@ -108,129 +182,8 @@ class _UserScreenState extends State<UserScreen> {
           showCustomDialgue(
             context: context,
             title: "Add user",
-            child: Align(
-              alignment: Alignment.center,
-              child: Form(
-                key: _formKey,
-                child: Container(
-                  height: MediaQuery.sizeOf(context).height * .65,
-                  width: MediaQuery.sizeOf(context).width * .9,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 20,
-                    horizontal: 20,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Material(
-                    color: AppColors.white,
-                    child: Column(
-                      children: [
-                        const Text(
-                          "Add user",
-                          style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        Spacer(),
-                        AppInput(
-                          controller: _nameController,
-                          label: "name",
-                          hint: "Enter your name...",
-                          keyboardType: TextInputType.name,
-                          validators: [FormBuilderValidators.required()],
-                        ),
-                        const SizedBox(height: 20),
-                        AppInput(
-                          controller: _emailController,
-                          label: "Email",
-                          hint: "Enter your email...",
-                          keyboardType: TextInputType.emailAddress,
-                          validators: [
-                            FormBuilderValidators.required(),
-                            FormBuilderValidators.email()
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        AppInput(
-                          controller: _telController,
-                          label: "Tel",
-                          hint: "Enter your tel...",
-                          keyboardType: TextInputType.phone,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                          validators: [
-                            FormBuilderValidators.required(),
-                          ],
-                        ),
-                        Spacer(),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: AppButton(
-                                loading: isLoading,
-                                onPressed: () async {
-                                  if (_formKey.currentState?.validate() ??
-                                      false) {
-                                    setState(() {
-                                      isLoading = true;
-                                    });
-                                    var data = {
-                                      "name": _nameController.text,
-                                      "email": _emailController.text,
-                                      "tel": _telController.text,
-                                    };
-                                    await _userServices.addUser(data: data);
-                                    setState(() {
-                                      isLoading = true;
-                                    });
-                                    _emailController.clear();
-                                    _nameController.clear();
-                                    _telController.clear();
-                                    context.router.pop();
-                                  }
-                                },
-                                bgColor: const Color.fromRGBO(35, 204, 183, 1),
-                                child: const Text(
-                                  "Save",
-                                  style: TextStyle(
-                                    color: AppColors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 20),
-                            Expanded(
-                              child: AppButton(
-                                onPressed: () {
-                                  _emailController.clear();
-                                  _nameController.clear();
-                                  _telController.clear();
-                                  context.router.pop();
-                                },
-                                borderColor: AppColors.bordeColor,
-                                child: const Text(
-                                  "Cancel",
-                                  style: TextStyle(
-                                    color: AppColors.blackBlue,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+            child: const AddOrUpdateUserWidget(
+              readOnly: false,
             ),
           );
         },

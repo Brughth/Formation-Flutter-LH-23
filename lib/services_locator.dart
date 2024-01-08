@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:formation_lh_23/auth/data/auth_services.dart';
+import 'package:formation_lh_23/auth/logic/cubit/auth_cubit.dart';
 import 'package:formation_lh_23/counter_with_bloc/logic/bloc/counter_bloc.dart';
 import 'package:formation_lh_23/counter_with_cubit/logic/cubit/counter_cubit.dart';
 import 'package:formation_lh_23/galery/data/galery_repository.dart';
@@ -31,6 +33,12 @@ void setupLocator() {
   getIt.registerSingleton<GalleryRepository>(
     GalleryRepository(
       dio: getIt.get<Dio>(instanceName: "dioGalery"),
+    ),
+  );
+
+  getIt.registerSingleton<AuthCubit>(
+    AuthCubit(
+      authService: AuthService(),
     ),
   );
 

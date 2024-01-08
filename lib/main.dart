@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:formation_lh_23/auth/logic/cubit/auth_cubit.dart';
 
 import 'package:formation_lh_23/counter_with_bloc/logic/bloc/counter_bloc.dart';
 import 'package:formation_lh_23/counter_with_cubit/logic/cubit/counter_cubit.dart';
@@ -29,6 +30,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider<AuthCubit>(
+          create: (context) => getIt.get<AuthCubit>(),
+        ),
         BlocProvider<CounterCubit>(
             create: (context) => getIt.get<CounterCubit>()),
         BlocProvider<CounterBloc>(
