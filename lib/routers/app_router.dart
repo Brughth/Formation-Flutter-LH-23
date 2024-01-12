@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/material.dart';
 import 'package:formation_lh_23/users/presentation/user_screen.dart';
 
 import '../app_init_screen.dart';
 import '../application_screen.dart';
+import '../auth/presentation/crop_image_screen.dart';
 import '../auth/presentation/login_screen.dart';
 import '../auth/presentation/register_screen.dart';
 import '../galery/presentation/gallery_screen.dart';
@@ -33,6 +37,9 @@ class AppRouter extends _$AppRouter {
         ),
         AutoRoute(
           page: UserRoute.page,
+        ),
+        AutoRoute(
+          page: CropImageRoute.page,
         )
       ];
 }

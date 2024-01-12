@@ -2,11 +2,13 @@ import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:formation_lh_23/auth/logic/cubit/auth_cubit.dart';
 import 'package:formation_lh_23/counter_whitout_bloc/counter_screen.dart';
 import 'package:formation_lh_23/counter_with_bloc/presentation/counter_bloc_screen.dart';
 import 'package:formation_lh_23/counter_with_cubit/presentation/counter_cubic_screen.dart';
 import 'package:formation_lh_23/posts_app_wiht_bloc/presentation/post_screen.dart';
 import 'package:formation_lh_23/routers/app_router.dart';
+import 'package:formation_lh_23/services_locator.dart';
 
 @RoutePage()
 class ApplicationScreen extends StatefulWidget {
@@ -29,6 +31,20 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
                 color: Colors.white,
               ),
         ),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              getIt.get<AuthCubit>().logout();
+              context.router.pushAndPopUntil(
+                const LoginRoute(),
+                predicate: (route) => false,
+              );
+            },
+            icon: const Icon(
+              Icons.logout,
+            ),
+          )
+        ],
       ),
       body: ListView(
         children: [

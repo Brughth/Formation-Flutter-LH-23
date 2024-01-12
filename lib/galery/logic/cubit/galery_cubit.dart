@@ -24,6 +24,7 @@ class GalleryCubit extends Cubit<GalleryState> {
 
     try {
       var images = await repository.getImages();
+      print(images);
       emit(
         state.copyWith(
           images: images,

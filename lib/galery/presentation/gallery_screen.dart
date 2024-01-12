@@ -23,7 +23,21 @@ class GalleryScreen extends StatelessWidget {
         builder: (context, state) {
           if (state.errorLoadingImages) {
             return Center(
-              child: Text("${state.message}"),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton.icon(
+                    onPressed: () {
+                      getIt.get<GalleryCubit>().getImages();
+                    },
+                    icon: const Icon(Icons.refresh),
+                    label: const Text("Refresh"),
+                  ),
+                  Text("${state.message}"),
+                ],
+              ),
             );
           }
 

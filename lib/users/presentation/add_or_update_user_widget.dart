@@ -4,6 +4,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:formation_lh_23/routers/app_router.dart';
 import 'package:formation_lh_23/shared/widgets/app_snackbar.dart';
 import 'package:formation_lh_23/users/data/user_model.dart';
 import 'package:image_picker/image_picker.dart';
@@ -35,7 +36,7 @@ class _AddOrUpdateUserWidgetState extends State<AddOrUpdateUserWidget> {
 
   late UserServices _userServices;
   bool isLoading = false;
-  File? _image;
+  MemoryImage? _image;
 
   @override
   void initState() {
@@ -60,12 +61,27 @@ class _AddOrUpdateUserWidgetState extends State<AddOrUpdateUserWidget> {
     super.dispose();
   }
 
-  Future<XFile?> getImage(ImageSource source) async {
+  Future<MemoryImage?> getImage(ImageSource source) async {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(
       source: source,
     );
-    return image;
+
+    if (image != null) {
+      var croppedImage = await context.router.push(
+        CropImageRoute(
+          image: File(image.path),
+        ),
+      );
+
+      if (croppedImage is MemoryImage) {
+        return croppedImage;
+      }
+      var bytes = await image.readAsBytes();
+      return MemoryImage(bytes);
+    }
+
+    return null;
   }
 
   @override
@@ -112,7 +128,7 @@ class _AddOrUpdateUserWidgetState extends State<AddOrUpdateUserWidget> {
                         backgroundColor: AppColors.white,
                         radius: 88,
                         backgroundImage: _image != null
-                            ? FileImage(_image!)
+                            ? Image.memory(_image!.bytes).image
                             : widget.user?.image != null
                                 ? NetworkImage(widget.user!.image!)
                                     as ImageProvider
@@ -128,7 +144,7 @@ class _AddOrUpdateUserWidgetState extends State<AddOrUpdateUserWidget> {
                             var image = await getImage(ImageSource.gallery);
                             if (image != null) {
                               setState(() {
-                                _image = File(image.path);
+                                _image = image;
                               });
                             } else {
                               if (mounted) {

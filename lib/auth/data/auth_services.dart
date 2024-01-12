@@ -51,4 +51,8 @@ class AuthService {
     var doc = (await users.doc(id).get()).data() as Map<String, dynamic>;
     return UserModel.fromJson(doc);
   }
+
+  logout() async {
+    return await auth.signOut();
+  }
 }

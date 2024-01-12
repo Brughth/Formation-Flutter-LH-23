@@ -33,6 +33,7 @@ dependencies:
   cached_network_image: ^3.3.0
   cloud_firestore: ^4.13.6
   cupertino_icons: ^1.0.2
+  custom_image_crop: ^0.0.13
   dio: ^5.4.0
   firebase_auth: ^4.16.0
   firebase_core: ^2.24.2

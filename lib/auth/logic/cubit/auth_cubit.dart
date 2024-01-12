@@ -127,4 +127,19 @@ class AuthCubit extends Cubit<AuthState> {
       );
     }
   }
+
+  setUSer(UserModel user) {
+    emit(
+      state.copyWith(
+        user: user,
+      ),
+    );
+  }
+
+  logout() async {
+    await authService.logout();
+    emit(
+      AuthState(),
+    );
+  }
 }

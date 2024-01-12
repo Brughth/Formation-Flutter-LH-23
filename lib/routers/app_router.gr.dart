@@ -27,6 +27,16 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const ApplicationScreen(),
       );
     },
+    CropImageRoute.name: (routeData) {
+      final args = routeData.argsAs<CropImageRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: CropImageScreen(
+          key: args.key,
+          image: args.image,
+        ),
+      );
+    },
     GalleryRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -86,6 +96,44 @@ class ApplicationRoute extends PageRouteInfo<void> {
   static const String name = 'ApplicationRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [CropImageScreen]
+class CropImageRoute extends PageRouteInfo<CropImageRouteArgs> {
+  CropImageRoute({
+    Key? key,
+    required File image,
+    List<PageRouteInfo>? children,
+  }) : super(
+          CropImageRoute.name,
+          args: CropImageRouteArgs(
+            key: key,
+            image: image,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'CropImageRoute';
+
+  static const PageInfo<CropImageRouteArgs> page =
+      PageInfo<CropImageRouteArgs>(name);
+}
+
+class CropImageRouteArgs {
+  const CropImageRouteArgs({
+    this.key,
+    required this.image,
+  });
+
+  final Key? key;
+
+  final File image;
+
+  @override
+  String toString() {
+    return 'CropImageRouteArgs{key: $key, image: $image}';
+  }
 }
 
 /// generated route for
